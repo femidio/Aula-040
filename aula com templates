@@ -1,0 +1,53 @@
+from flask import Flask, request
+import datetime
+
+app = Flask(__name__)
+
+def menu():
+    return """
+        <div style="padding: 10px; background-color: #f1f1f1;">
+            <a href="/">HOME</a> |
+            <a href="/identificacao">IDENTIFICAÇÃO</a> |
+            <a href="/contextorequisicao">CONTEXTO DA REQUISIÇÃO</a>
+        </div>
+    """
+
+@app.route('/')
+def home():
+    return """
+        <h1>Avaliação contínua: Aula040</h1>
+        <h2>Dados da última atualização:</h2>
+        <p>Local e data é: {}</p>
+        <p>Isso foi há: {} dias</p>
+        {}
+    """.format(datetime.datetime.now(), (datetime.datetime.now() - datetime.datetime(2024, 1, 1, 0, 0, 0)).days, menu())
+
+@app.route('/identificacao')
+def identificacao():
+    nome = "Francisco Emidio"  # Pode ser obtido de algum lugar, como uma variável de sessão
+    return """
+        {}
+        <h2>Olá, {}</h2>
+        <hr>
+        <h2>Identificação</h2>
+        <p>Prontuário: {prontuario}</p>
+        <p>Instituição: {instituicao}</p>
+        <button onclick="history.go(-1);">Voltar</button>
+    """.format(menu(), nome, prontuario="PT3021912", instituicao="IFSP")
+
+@app.route('/contextorequisicao')
+def contextorequisicao():
+    nome = "Francisco Emidio"  # Pode ser obtido de algum lugar, como uma variável de sessão
+    return """
+        {}
+        <h2>Olá, {}</h2>
+        <hr>
+        <h2>Contexto da requisição</h2>
+        <p>Seu navegador é: {user_agent}</p>
+        <p>O IP do computador remoto é: {remote_addr}</p>
+        <p>O host da aplicação é: {host}</p>
+        <button onclick="history.go(-1);">Voltar</button>
+    """.format(menu(), nome, user_agent=request.headers.get('User-Agent'), remote_addr=request.remote_addr, host=request.host)
+
+if __name__ == '__main__':
+    app.run(debug=True)
